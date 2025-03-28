@@ -188,10 +188,6 @@ if [ -d bin/ ]; then
 	mv bin/ /artifacts/
 fi
 
-if [ -d staging_dir/hostpkg/ ]; then
-	mv staging_dir/hostpkg/ /artifacts/
-fi
-
 if [ -d logs/ ]; then
 	mv logs/ /artifacts/
 fi
