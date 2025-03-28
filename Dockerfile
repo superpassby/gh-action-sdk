@@ -10,6 +10,8 @@ USER root
 # 安装 time
 RUN apt-get update && apt-get install -y time && rm -rf /var/lib/apt/lists/*
 
+USER buildbot
+
 ADD entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
