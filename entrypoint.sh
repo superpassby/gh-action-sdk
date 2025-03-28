@@ -70,7 +70,7 @@ if [ -z "$PACKAGES" ]; then
 
 	RET=0
 
-	make \
+	time make \
 		BUILD_LOG="$BUILD_LOG" \
 		CONFIG_SIGNED_PACKAGES="$CONFIG_SIGNED_PACKAGES" \
 		IGNORE_ERRORS="$IGNORE_ERRORS" \
@@ -87,14 +87,14 @@ else
 		done
 
 		group "make package/$PKG/download"
-		make \
+		time make \
 			BUILD_LOG="$BUILD_LOG" \
 			IGNORE_ERRORS="$IGNORE_ERRORS" \
 			"package/$PKG/download" V=s
 		endgroup
 
 		group "make package/$PKG/check"
-		make \
+		time make \
 			BUILD_LOG="$BUILD_LOG" \
 			IGNORE_ERRORS="$IGNORE_ERRORS" \
 			"package/$PKG/check" V=s 2>&1 | \
@@ -119,7 +119,7 @@ else
 		PATCHES_DIR=$(find /feed -path "*/$PKG/patches")
 		if [ -d "$PATCHES_DIR" ] && [ -z "$NO_REFRESH_CHECK" ]; then
 			group "make package/$PKG/refresh"
-			make \
+			time make \
 				BUILD_LOG="$BUILD_LOG" \
 				IGNORE_ERRORS="$IGNORE_ERRORS" \
 				"package/$PKG/refresh" V=s
@@ -132,7 +132,7 @@ else
 			fi
 
 			group "make package/$PKG/clean"
-			make \
+			time make \
 				BUILD_LOG="$BUILD_LOG" \
 				IGNORE_ERRORS="$IGNORE_ERRORS" \
 				"package/$PKG/clean" V=s
@@ -151,7 +151,7 @@ else
 
 	done
 
-	make \
+	time make \
 		-f .config \
 		-f tmp/.packagedeps \
 		-f <(echo "\$(info \$(sort \$(package-y) \$(package-m)))"; echo -en "a:\n\t@:") \
@@ -165,7 +165,7 @@ else
 			continue
 		fi
 
-		make \
+		time make \
 			BUILD_LOG="$BUILD_LOG" \
 			IGNORE_ERRORS="$IGNORE_ERRORS" \
 			CONFIG_AUTOREMOVE=y \
