@@ -7,10 +7,12 @@ runs:
     - run: |
         echo "artifacts_dir=${ARTIFACTS_DIR:-$GITHUB_WORKSPACE}" >> "$GITHUB_OUTPUT"
         echo "feed_dir=${FEED_DIR:-$GITHUB_WORKSPACE}" >> "$GITHUB_OUTPUT"
-        echo "hostpkg_dir=${{ runner.workspace }}/hostpkg" >> "$GITHUB_OUTPUT"
+        echo "hostpkg_dir=${HOSTPKG_DIR:-$(dirname $GITHUB_WORKSPACE)/hostpkg}" >> "$GITHUB_OUTPUT"
       shell: bash
       id: inputs
-    - run: sudo chown -R 1000:1000 ${{ steps.inputs.outputs.artifacts_dir }} ${{ steps.inputs.outputs.feed_dir }}
+    - run: | 
+        mkdir -p ${{ steps.inputs.outputs.hostpkg_dir }}
+        sudo chown -R 1000:1000 ${{ steps.inputs.outputs.artifacts_dir }} ${{ steps.inputs.outputs.feed_dir }} ${{ steps.inputs.outputs.hostpkg_dir }}
       shell: bash
     -
       name: Set up Docker QEMU
@@ -49,7 +51,7 @@ runs:
           --env V \
           -v ${{ steps.inputs.outputs.artifacts_dir }}:/artifacts \
           -v ${{ steps.inputs.outputs.feed_dir }}:/feed \
-          -v ${{ steps.inputs.outputs.hostpkg_dir }}:$(docker inspect --format '{{.Config.WorkingDir}}' sdk)/staging_dir/hostpkg" \ 
+          -v "${{ steps.inputs.outputs.hostpkg_dir }}:$(docker inspect --format '{{.Config.WorkingDir}}' sdk)/staging_dir/hostpkg" \
           sdk
       shell: bash
     - run: sudo chown -R --reference=${{ steps.inputs.outputs.artifacts_dir }}/.. ${{ steps.inputs.outputs.artifacts_dir }}
