@@ -1,5 +1,7 @@
 #!/bin/bash
 
+TIMEFORMAT='[%Rs]' || true
+
 set -ef
 
 GROUP=
